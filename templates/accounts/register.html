@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Регистрация - Design.pro{% endblock %}
+{% block content %}
+<section class="card form-card">
+  <h1>Регистрация</h1>
+  {% if form.non_field_errors %}
+    <div class="alert alert-error">
+      {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+    </div>
+  {% endif %}
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {% include "includes/_field.html" with field=form.full_name %}
+    {% include "includes/_field.html" with field=form.username %}
+    {% include "includes/_field.html" with field=form.email %}
+    {% include "includes/_field.html" with field=form.password1 %}
+    {% include "includes/_field.html" with field=form.password2 %}
+    <div class="field field-check{% if form.consent.errors %} has-error{% endif %}">
+      <label class="check-label" for="{{ form.consent.id_for_label }}">
+        {{ form.consent }} {{ form.consent.label }}
+      </label>
+      {% for error in form.consent.errors %}<p class="error-text">{{ error }}</p>{% endfor %}
+    </div>
+    <button type="submit" class="btn">Зарегистрироваться</button>
+  </form>
+  <p class="form-note">Уже есть учётная запись? <a href="{% url 'login' %}">Войдите</a></p>
+</section>
+{% endblock %}

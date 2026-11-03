@@ -7,7 +7,7 @@ from django.shortcuts import render
 
 
 def admin_required(view_func):
-    """Доступ только для авторизованного администратора (иначе вход или ошибка 403)."""
+    """Доступ только для авторизованного администратора (иначе вход или ошибка 403)"""
     @login_required
     @wraps(view_func)
     def _wrapped(request, *args, **kwargs):

@@ -1,4 +1,4 @@
-"""URL configuration for the Design.pro project."""
+
 from django.contrib import admin
 from django.urls import path, include
 
