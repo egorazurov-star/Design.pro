@@ -1,8 +1,53 @@
 {% extends "base.html" %}
 {% block title %}Панель администратора - Design.pro{% endblock %}
 {% block content %}
-<section class="card">
+<div class="page-head">
   <h1>Панель администратора</h1>
-  <p>Здравствуйте, {{ user.full_name|default:user.username }}! Здесь будет управление заявками и категориями.</p>
-</section>
+</div>
+
+<form method="get" class="filter">
+  <label for="status">Статус</label>
+  <select name="status" id="status">
+    <option value="">Все</option>
+    {% for value, label in statuses %}
+      <option value="{{ value }}"{% if value == status %} selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit" class="btn btn-secondary">Показать</button>
+</form>
+
+{% if design_requests %}
+<div class="table-wrap">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Дата и время</th>
+        <th>Заявитель</th>
+        <th>Название</th>
+        <th>Категория</th>
+        <th>Статус</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in design_requests %}
+      <tr>
+        <td>{{ item.created_at|date:"d.m.Y H:i" }}</td>
+        <td>{{ item.user.full_name|default:item.user.username }}</td>
+        <td>{{ item.title }}</td>
+        <td>{{ item.category.name }}</td>
+        <td><span class="badge badge-{{ item.status }}">{{ item.get_status_display }}</span></td>
+        <td>
+          {% if item.status == "new" %}
+            <a class="btn btn-small" href="{% url 'admin_request_status' item.pk %}">Сменить статус</a>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+  <p class="empty">Заявок не найдено.</p>
+{% endif %}
 {% endblock %}

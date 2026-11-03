@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Смена статуса - Design.pro{% endblock %}
+{% block content %}
+<h1>Заявка «{{ design_request.title }}»</h1>
+
+<section class="card">
+  <p><strong>Заявитель:</strong> {{ design_request.user.full_name|default:design_request.user.username }}</p>
+  <p><strong>Категория:</strong> {{ design_request.category.name }}</p>
+  <p><strong>Дата и время:</strong> {{ design_request.created_at|date:"d.m.Y H:i" }}</p>
+  <p><strong>Описание:</strong> {{ design_request.description|linebreaksbr }}</p>
+  <p><strong>Текущий статус:</strong> <span class="badge badge-{{ design_request.status }}">{{ design_request.get_status_display }}</span></p>
+  {% if design_request.photo %}
+    <img class="preview" src="{{ design_request.photo.url }}" alt="Фото помещения">
+  {% endif %}
+</section>
+
+<div class="grid grid-2">
+  <section class="card">
+    <h2>Принять в работу</h2>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      <input type="hidden" name="action" value="progress">
+      {% include "includes/_field.html" with field=progress_form.comment %}
+      <button type="submit" class="btn">Принять в работу</button>
+    </form>
+  </section>
+
+  <section class="card">
+    <h2>Выполнено</h2>
+    <form method="post" enctype="multipart/form-data" novalidate>
+      {% csrf_token %}
+      <input type="hidden" name="action" value="done">
+      {% include "includes/_field.html" with field=done_form.design_image %}
+      <button type="submit" class="btn">Отметить выполненной</button>
+    </form>
+  </section>
+</div>
+
+<p><a href="{% url 'superadmin' %}">&larr; Назад к списку заявок</a></p>
+{% endblock %}
