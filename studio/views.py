@@ -3,10 +3,11 @@ from functools import wraps
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import DesignRequestForm, DoneForm, InProgressForm
-from .models import DesignRequest
+from .forms import CategoryForm, DesignRequestForm, DoneForm, InProgressForm
+from .models import Category, DesignRequest
 
 
 def admin_required(view_func):
@@ -146,4 +147,33 @@ def admin_request_status(request, pk):
         'design_request': design_request,
         'progress_form': progress_form,
         'done_form': done_form,
+    })
+
+
+@admin_required
+def admin_categories(request):
+    """Управление категориями: список и добавление."""
+    form = CategoryForm(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        messages.success(request, 'Категория добавлена.')
+        return redirect('admin_categories')
+    categories = Category.objects.annotate(requests_count=Count('requests'))
+    return render(request, 'studio/admin_categories.html', {
+        'form': form,
+        'categories': categories,
+    })
+
+
+@admin_required
+def admin_category_delete(request, pk):
+    """Удаление категории вместе со всеми её заявками (после подтверждения)."""
+    category = get_object_or_404(Category, pk=pk)
+    if request.method == 'POST':
+        category.delete()
+        messages.success(request, 'Категория и все её заявки удалены.')
+        return redirect('admin_categories')
+    return render(request, 'studio/admin_category_confirm_delete.html', {
+        'category': category,
+        'requests_count': category.requests.count(),
     })

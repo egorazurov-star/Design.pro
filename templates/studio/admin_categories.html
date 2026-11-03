@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Категории - Design.pro{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Категории заявок</h1>
+  <a class="btn btn-secondary" href="{% url 'superadmin' %}">К заявкам</a>
+</div>
+
+<section class="card form-card">
+  <h2>Добавить категорию</h2>
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {% include "includes/_field.html" with field=form.name %}
+    <button type="submit" class="btn">Добавить</button>
+  </form>
+</section>
+
+{% if categories %}
+<div class="table-wrap">
+  <table class="table">
+    <thead>
+      <tr><th>Название</th><th>Заявок</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for category in categories %}
+      <tr>
+        <td>{{ category.name }}</td>
+        <td>{{ category.requests_count }}</td>
+        <td><a class="btn btn-danger btn-small" href="{% url 'admin_category_delete' category.pk %}">Удалить</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+  <p class="empty">Категорий пока нет.</p>
+{% endif %}
+{% endblock %}

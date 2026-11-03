@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import DesignRequest
+from .models import Category, DesignRequest
 
 
 class DesignRequestForm(forms.ModelForm):
@@ -46,3 +46,14 @@ class DoneForm(forms.ModelForm):
     class Meta:
         model = DesignRequest
         fields = ['design_image']
+
+
+class CategoryForm(forms.ModelForm):
+    """Добавление категории заявок."""
+
+    class Meta:
+        model = Category
+        fields = ['name']
+        error_messages = {
+            'name': {'unique': 'Такая категория уже существует.'},
+        }

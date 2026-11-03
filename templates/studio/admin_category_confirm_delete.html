@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Удаление категории - Design.pro{% endblock %}
+{% block content %}
+<section class="card form-card">
+  <h1>Удаление категории</h1>
+  <p>Вы действительно хотите удалить категорию «{{ category.name }}»?</p>
+  <p class="error-text">Вместе с категорией будут удалены все её заявки: {{ requests_count }}.</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Да, удалить</button>
+    <a class="btn btn-secondary" href="{% url 'admin_categories' %}">Отмена</a>
+  </form>
+</section>
+{% endblock %}
