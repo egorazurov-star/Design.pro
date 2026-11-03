@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Доступ запрещён - Design.pro{% endblock %}
+{% block content %}
+<section class="card form-card">
+  <h1>Доступ запрещён</h1>
+  <p>У вас нет прав для просмотра этой страницы.</p>
+  <a class="btn" href="{% url 'home' %}">На главную</a>
+</section>
+{% endblock %}

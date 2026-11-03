@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Design.pro - дизайн интерьеров{% endblock %}
+{% block content %}
+<section class="hero">
+  <h1>Design<span>.pro</span></h1>
+  <p>Эксклюзивные проекты оформления жилых помещений. Загрузите план или фото вашего помещения - наши дизайнеры предложат варианты оформления.</p>
+  {% if not user.is_authenticated %}
+    <a class="btn" href="{% url 'login' %}">Войти</a>
+  {% else %}
+    <a class="btn" href="{% url 'cabinet' %}">Личный кабинет</a>
+  {% endif %}
+</section>
+{% endblock %}
