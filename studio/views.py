@@ -69,6 +69,26 @@ def request_create(request):
     return render(request, 'studio/request_form.html', {'form': form})
 
 
+@login_required
+def request_delete(request, pk):
+    """Удаление своей заявки (только в статусе «Новая») с подтверждением."""
+    design_request = get_object_or_404(DesignRequest, pk=pk, user=request.user)
+    if design_request.status != DesignRequest.STATUS_NEW:
+        messages.error(
+            request,
+            'Нельзя удалить заявку, статус которой изменён администратором.',
+        )
+        return redirect('cabinet')
+
+    if request.method == 'POST':
+        design_request.delete()
+        messages.success(request, 'Заявка удалена.')
+        return redirect('cabinet')
+    return render(request, 'studio/request_confirm_delete.html', {
+        'design_request': design_request,
+    })
+
+
 @admin_required
 def admin_panel(request):
     """Панель управления сайтом (личный кабинет администратора)."""

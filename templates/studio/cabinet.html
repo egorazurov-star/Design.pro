@@ -27,6 +27,7 @@
         <th>Описание</th>
         <th>Категория</th>
         <th>Статус</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -43,6 +44,11 @@
           {% endif %}
           {% if item.status == "done" and item.design_image %}
             <p class="note"><a href="{{ item.design_image.url }}" target="_blank" rel="noopener">Смотреть дизайн</a></p>
+          {% endif %}
+        </td>
+        <td>
+          {% if item.status == "new" %}
+            <a class="btn btn-danger btn-small" href="{% url 'request_delete' item.pk %}">Удалить</a>
           {% endif %}
         </td>
       </tr>
