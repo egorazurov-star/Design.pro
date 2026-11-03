@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Новая заявка - Design.pro{% endblock %}
+{% block content %}
+<section class="card form-card">
+  <h1>Новая заявка на разработку дизайна</h1>
+  {% if form.non_field_errors %}
+    <div class="alert alert-error">
+      {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+    </div>
+  {% endif %}
+  <form method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+    {% include "includes/_field.html" with field=form.title %}
+    {% include "includes/_field.html" with field=form.description %}
+    {% include "includes/_field.html" with field=form.category %}
+    {% include "includes/_field.html" with field=form.photo %}
+    <button type="submit" class="btn">Отправить заявку</button>
+    <a class="btn btn-secondary" href="{% url 'cabinet' %}">Отмена</a>
+  </form>
+</section>
+{% endblock %}

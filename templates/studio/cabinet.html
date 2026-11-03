@@ -4,5 +4,6 @@
 <section class="card">
   <h1>Личный кабинет</h1>
   <p>Здравствуйте, {{ user.full_name|default:user.username }}!</p>
+  <a class="btn" href="{% url 'request_create' %}">Создать заявку</a>
 </section>
 {% endblock %}

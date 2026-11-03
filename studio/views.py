@@ -1,9 +1,11 @@
 from functools import wraps
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, redirect, render
 
+from .forms import DesignRequestForm
 from .models import DesignRequest
 
 
@@ -38,6 +40,19 @@ def home(request):
 def cabinet(request):
     """Личный кабинет пользователя."""
     return render(request, 'studio/cabinet.html')
+
+
+@login_required
+def request_create(request):
+    """Создание заявки. Статус «Новая» задаётся автоматически."""
+    form = DesignRequestForm(request.POST or None, request.FILES or None)
+    if request.method == 'POST' and form.is_valid():
+        design_request = form.save(commit=False)
+        design_request.user = request.user
+        design_request.save()
+        messages.success(request, 'Заявка успешно создана.')
+        return redirect('cabinet')
+    return render(request, 'studio/request_form.html', {'form': form})
 
 
 @admin_required
