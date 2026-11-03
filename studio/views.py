@@ -38,8 +38,22 @@ def home(request):
 
 @login_required
 def cabinet(request):
-    """Личный кабинет пользователя."""
-    return render(request, 'studio/cabinet.html')
+    """Личный кабинет: свои заявки (новые - сверху) с фильтром по статусу."""
+    design_requests = (
+        DesignRequest.objects
+        .filter(user=request.user)
+        .select_related('category')
+    )
+    status = request.GET.get('status', '')
+    if status in dict(DesignRequest.STATUS_CHOICES):
+        design_requests = design_requests.filter(status=status)
+    else:
+        status = ''
+    return render(request, 'studio/cabinet.html', {
+        'design_requests': design_requests,
+        'status': status,
+        'statuses': DesignRequest.STATUS_CHOICES,
+    })
 
 
 @login_required
