@@ -3,7 +3,7 @@ from django.db.models.signals import post_migrate
 
 
 def create_default_admin(sender, **kwargs):
-    """После migrate создаёт учётную запись администратора"""
+    """После migrate создаёт учётную запись администратора (admin / WSR)."""
     from django.contrib.auth import get_user_model
 
     User = get_user_model()

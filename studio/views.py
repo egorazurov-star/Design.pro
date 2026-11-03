@@ -4,10 +4,11 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import render
 
+from .models import DesignRequest
 
 
 def admin_required(view_func):
-    """Доступ только для авторизованного администратора (иначе вход или ошибка 403)"""
+    """Доступ только для авторизованного администратора (иначе вход или ошибка 403)."""
     @login_required
     @wraps(view_func)
     def _wrapped(request, *args, **kwargs):
@@ -18,8 +19,19 @@ def admin_required(view_func):
 
 
 def home(request):
-    """Главная страница."""
-    return render(request, 'studio/home.html')
+    """Главная страница: 4 последние выполненные заявки и счётчик заявок «в работе»."""
+    done_requests = (
+        DesignRequest.objects
+        .filter(status=DesignRequest.STATUS_DONE)
+        .select_related('category')[:4]
+    )
+    in_progress_count = DesignRequest.objects.filter(
+        status=DesignRequest.STATUS_IN_PROGRESS
+    ).count()
+    return render(request, 'studio/home.html', {
+        'done_requests': done_requests,
+        'in_progress_count': in_progress_count,
+    })
 
 
 @login_required
